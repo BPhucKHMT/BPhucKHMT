@@ -1,5 +1,7 @@
 ### Hi there 👋
-
+- 🔭 I’m currently working on UIT
+- 🌱 I’m currently learning Computer science
+- -  How to reach me: https://www.facebook.com/phuc.nguyenlambao.9/
 <!--
 **BPhucKHMT/BPhucKHMT** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
