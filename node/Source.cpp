@@ -5,9 +5,16 @@
 #include <string>
 #include <fstream>
 using namespace std;
+struct SinhVien
+{
+	string HoTen;
+	int MSSV;
+	int Diem;
+};
+typedef struct SinhVien SINHVIEN;
 struct Node
 {
-	int data;
+	SINHVIEN data;
 	Node* next;
 };
 typedef struct Node  NODE;
@@ -29,7 +36,17 @@ bool IsEmpty(LIST l) //Ktra xem danh sach lien ket don co rong  khong
 		return 1;
 	return 0;
 }
-NODE* GetNode( int x) // Tao node moi co gia tri p-> data = x , va phan p->data = null 
+void NhapSV(SINHVIEN& x)
+{
+	cin.ignore(59, '\n');
+	cout << "Nhap ho ten sv " ;
+	getline(cin, x.HoTen);
+	cout << "Nhap ma so sinh vien ";
+	cin >> x.MSSV;
+	cout << "Nhap diem sinh vien ";
+	cin >> x.Diem;
+}
+NODE* GetNode(SINHVIEN x) // Tao node moi co gia tri p-> data = x , va phan p->data = null 
 {
 	NODE* p = new NODE;
 	if (p == NULL)
@@ -50,43 +67,45 @@ void AddTail(NODE* p, LIST& l) // them node p vua tao vao sau node
 		l.tail = p;
 	}
 }
-void NhapNode(LIST& l, int& n )
+void NhapNode(LIST& l, int& n)
 {
-	cin >> n;
-	int x;
+	n = 1;
+	SINHVIEN x;
 	for (int i = 0; i < n; i++) // Nhap node
 	{
-		cin >> x;
+		NhapSV(x);
 		NODE* p = GetNode(x);
 		AddTail(p, l);
 	}
 }
-void XuatNode(LIST l )
+void XuatNode(LIST l)
 {
 	NODE* p = l.head;
 	while (p != NULL)
 	{
-		cout << setw(5) << p->data;
+		cout << setw(5) << p->data.HoTen << endl;
+		cout  << setw(5) << p->data.MSSV << endl;
+		cout  << setw(5) << p->data.Diem << endl;
 		p = p->next;
 	}
 }
-int NhapNodeFile(  int& n ,LIST& l , string FileName )
+int NhapNodeFile(int& n, LIST& l, string FileName)
 {
-	
-	int x;
+
+	SINHVIEN x;
 	ifstream fi(FileName);
 	if (fi.fail() == true)
 		return 0;
 	fi >> n;
 	for (int i = 0; i < n; i++)
 	{
-		fi >> x;
+		fi >> x.HoTen >> x.MSSV >> x.Diem;
 		Node* p = GetNode(x);
 		AddTail(p, l);
 	}
 	return 1;
 }
-int XuatNodeFile(int n ,LIST& l , string FileName)
+int XuatNodeFile(int sl , LIST& l, string FileName , int n)
 {
 	ofstream fo(FileName);
 	if (fo.fail() == true)
@@ -95,31 +114,50 @@ int XuatNodeFile(int n ,LIST& l , string FileName)
 	NODE* p = l.head;
 	while (p != NULL)
 	{
-		fo << setw(5) << p->data;
+		fo << setw(5) << p->data.HoTen<<endl;
+		fo << setw(5) << p->data.MSSV << endl;
+		fo << setw(5) << p->data.Diem << endl;
 		p = p->next;
 	}
+	return 1;
+}
+void XuatMenu( LIST& l , int& n ,int& sl)
+{
+	cout << "**************************************************" << endl;
+	cout << "** Phim 1 : Nhap sinh vien			**" << endl;
+	cout << "** Phim 2 : Xuat ds sinh vien			**" << endl;
+	cout << "** Phim 3 : Sap xep  sinh vien			**" << endl;
+	cout << "** Phim 4 : Nhap sinh vien tu file 		**" << endl;
+	cout << "** Phim 5 : Xuat sinh vien ra file		**" << endl;
+	cout << "**************************************************" << endl;
+	cout << "Nhap Phim so theo huong dan " << endl;
+	cin >> sl;
+	switch (sl)
+	{
+	case 1:
+		NhapNode(l, n);
+		break;
+	default:
+		XuatNode(l);
+	}
+	while (true)
+	{
+		system("pause");
+		system("cls");
+		XuatMenu(l, n, sl);
+	}
+
 
 }
 int main()
 {
-	int n;
-	while (true)
-	{
-		cout << "Nhap n ";
-		cin >> n;
-		cout << "Bam phim bat ky de tiep tuc ";
-		system("pause");
-		system("cls");
-	}
-	
-	/*LIST l;
+	int sl;
+
+
+	LIST l;
 	Init(l);
 	int n;
-	cout << "Nhap so node  ";
-	string filename = "data1.txt";
-	NhapNode(l, n);
-	Node* p = l.head;
-	XuatNodeFile(n, l, filename);*/
+	XuatMenu(l,n, sl);
 	
 	return 0;
 }
