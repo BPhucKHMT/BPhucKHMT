@@ -152,9 +152,9 @@ void XuatMenu(LIST& l, int& n, int& sl , char& x)
 	cout << "** Phim 5 : Xuat sinh vien ra file		**" << endl;
 	cout << "** Phim 6 : Them sinh vien dau danh sach	**" << endl;
 	cout << "** Phim 7 : Them sinh vien cuoi danh sach	**" << endl;
-	cout << "** Phim 8 : Them sinh vien giua danh sach		**" << endl;
-	cout << "** Phim 9 : Lam moi man hinh		**" << endl;
-	cout << "** Phim 10 : Tat man hinh		**" << endl;
+	cout << "** Phim 8 : Them sinh vien giua danh sach	**" << endl;
+	cout << "** Phim 9 : Lam moi man hinh			**" << endl;
+	cout << "** Phim 10 : Tat man hinh			**" << endl;
 	cout << "**************************************************" << endl;
 	x = 'y';
 	do {
