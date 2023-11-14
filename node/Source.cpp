@@ -49,6 +49,11 @@ void NhapSV(SINHVIEN& x)
 	cin >> x.MSSV;
 	cout << "Nhap diem sinh vien ";
 	cin >> x.Diem;
+	while (!(x.Diem >= 0 and x.Diem <= 30))
+	{
+		cout << "Diem khong hop le , xin nhap lai :";
+		cin >> x.Diem;
+	}
 }
 NODE* GetNode(SINHVIEN x) // Tao node moi co gia tri p-> data = x , va phan p->data = null 
 {
@@ -88,12 +93,12 @@ void XuatNode(LIST l)
 	cout << " *****************************************************************" << endl;
 	while (p != NULL)
 	{
-		cout  <<"*" <<'\t'<< p->data.HoTen << "\t" ;
-		cout  << '\t'<< p->data.MSSV << "\t";
-		cout   <<'\t'<< p->data.Diem <<"*"<< endl;
+		cout << left << setw(20) << p->data.HoTen;
+		cout << left << setw(20) << to_string(p->data.MSSV);
+		cout << left << setw(20) << to_string(p->data.Diem) << '\t' << "*" << endl;
 		p = p->next;
 	}
-	cout << " ***********************************************************";
+	cout << " *****************************************************************";
 }
 int NhapNodeFile(int& n, LIST& l, string FileName)
 {
@@ -129,19 +134,72 @@ int XuatNodeFile(int sl, LIST& l, string FileName, int n)
 }
 void SapXepSV(LIST& l)
 {
-	for (NODE* p = l.head; p->next != NULL; p=p->next)
+	for (NODE* p = l.head; p->next != NULL; p = p->next)
 	{
-		for ( NODE * q = p->next ; q != NULL ;q= q->next)
+		for (NODE* q = p->next; q != NULL; q = q->next)
 			if (q->data.MSSV < p->data.MSSV)
 			{
 				NODE temp;
 				temp.data = q->data;
 				q->data = p->data;
-				p -> data =temp.data;
+				p->data = temp.data;
 			}
 	}
 }
-void XuatMenu(LIST& l, int& n, int& sl , char& x)
+void ThemDau(LIST& l)
+{
+	SINHVIEN x;
+	NhapSV(x);
+	NODE* p = GetNode(x);
+	if (l.head == NULL) // neu chua co node nao ton tai
+	{
+		l.head = l.tail = p;
+	}
+	else
+	{
+		p->next = l.head;
+		l.head = p;
+	}
+}
+int DemNode(LIST l)
+{
+	int dem = 0;
+	NODE* p = l.head;
+	while (p != NULL)
+	{
+		dem++;
+		p = p->next;
+	}
+	return dem;
+}
+void AddMid(LIST& l, int vt)
+{
+	SINHVIEN x;
+	if (vt == 1)
+	{
+		ThemDau(l);
+		void;
+	}
+	NhapSV(x);
+	NODE* p = GetNode(x);
+	Node* t = l.head;
+	if ((vt > 1 and vt <= DemNode(l)))
+	{
+		for (int i = 1; i < vt - 1; i++)
+		{
+			t = t->next;
+		}
+		p->next = t->next;
+		t->next = p;
+
+	}
+
+	else if (vt == DemNode(l) + 1)
+		AddTail(p, l);
+	else
+		cout << "Vi tri khong hop le ";
+}
+void XuatMenu(LIST& l, int& n, int& sl, char& x)
 {
 	string FileName = "data2.txt";
 	cout << "**************************************************" << endl;
@@ -151,15 +209,23 @@ void XuatMenu(LIST& l, int& n, int& sl , char& x)
 	cout << "** Phim 4 : Nhap sinh vien tu file 		**" << endl;
 	cout << "** Phim 5 : Xuat sinh vien ra file		**" << endl;
 	cout << "** Phim 6 : Them sinh vien dau danh sach	**" << endl;
-	cout << "** Phim 7 : Them sinh vien cuoi danh sach	**" << endl;
-	cout << "** Phim 8 : Them sinh vien giua danh sach	**" << endl;
+	cout << "** Phim 7 : Them sinh vien giua danh sach	**" << endl;
+	cout << "** Phim 8 : Xem so luong sinh vien		**" << endl;
 	cout << "** Phim 9 : Lam moi man hinh			**" << endl;
 	cout << "** Phim 10 : Tat man hinh			**" << endl;
-	cout << "**************************************************" << endl;
+	cout << "*********************************************************" << endl;
 	x = 'y';
-	do {
-		cout << "Nhap Phim so theo huong dan " << endl;
-		cin >> sl;
+	while (true)
+	{
+		cout << '\n' << "Nhap Phim so theo huong dan " << endl;
+		if (!(cin >> sl))
+		{
+			cout << "Invalid input. Please try again.\n";
+			cin.clear(); // Xóa tr?ng thái l?i c?a std::cin
+			cin.ignore(10000, '\n'); // Xóa b? ??m ??u vào
+			continue; // Quay l?i ??u vòng l?p
+		}
+
 		switch (sl)
 		{
 		case 1:
@@ -177,7 +243,21 @@ void XuatMenu(LIST& l, int& n, int& sl , char& x)
 		case 5:
 			XuatNodeFile(sl, l, FileName, n);
 			break;
-		
+		case 6:
+			ThemDau(l);
+			break;
+		case 7:
+			cout << "Nhap vi tri muon them ";
+			int vt;
+			cin >> vt;
+			AddMid(l, vt);
+			break;
+		case 8:
+			cout << "So luong sinh vien la ";
+			cout << DemNode(l);
+			break;
+
+
 		case 9:
 			system("pause");
 			system("cls");
@@ -186,41 +266,40 @@ void XuatMenu(LIST& l, int& n, int& sl , char& x)
 		case 10:
 		{
 			cout << "Vui long nhan ESC de thoat " << endl;
-			char ch = _getch(); // Sử dụng hàm _getch() từ thư viện conio.h
+			char ch = _getch(); // S? d?ng hàm _getch() t? th? vi?n conio.h
 			if (ch == 27)
-			{ // 27 là mã ASCII của nút Esc
+			{ // 27 là mã ASCII c?a nút Esc
 				std::cout << "Da Nhan esc chuong trinh se thoat " << std::endl;
 				Sleep(100);
-				break;
+
+				return;
 			}
 		}
 		break;
 		default:
-			
-				cout << "So Nhap khong hop le , xin nhap lai " << endl;;
-				continue;
 
-			
+			cout << "So Nhap khong hop le , xin nhap lai " << endl;;
+			continue;
+
+
 		}
 
 		/*while (true)
 		{
-			char ch = _getch(); // Sử dụng hàm _getch() từ thư viện conio.h
-			cout << "Vui long nhấn nút Esc để thoát." <<endl;
+			char ch = _getch(); // S? d?ng hàm _getch() t? th? vi?n conio.h
+			cout << "Vui long nh?n nút Esc ?? thoát." <<endl;
 			if (ch == 27)
-			{ // 27 là mã ASCII của nút Esc
-				std::cout << "Đã nhấn nút Esc. Chương trình sẽ thoát." << std::endl;
+			{ // 27 là mã ASCII c?a nút Esc
+				std::cout << "?ã nh?n nút Esc. Ch??ng trình s? thoát." << std::endl;
 				break;
 			}
 			/*system("pause");
 			getchar();
 			system("cls");
 			XuatMenu(l, n, sl); }*/
-		cout << endl;
-		cout << "Bam y de tiep tuc ";
-		cin >> x;
-	} while (x == 'y');
-		
+
+	}
+
 
 }
 
@@ -228,13 +307,14 @@ int main()
 {
 	int sl;
 
-	
+
 	LIST l;
 	Init(l);
 	int n;
 	char x;
 	XuatMenu(l, n, sl, x);
-	
-	
+
+
+
 	return 0;
 }
